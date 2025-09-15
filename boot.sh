@@ -2,7 +2,7 @@
 
 clear
 
-ansiArt = "
+ansiArt="
 ██╗  ██╗██╗   ██╗██████╗ ██████╗  █████╗ ██████╗  ██████╗██╗  ██╗
 ██║  ██║ ██╗ ██╔╝██╔══██╗██╔══██╗██╔══██╗██╔══██╗██╔════╝██║  ██║
 ███████║  ████╔╝ ██████╔╝██████╔╝███████║██████╔╝██║     ███████║
@@ -11,13 +11,39 @@ ansiArt = "
 ╚═╝  ╚═╝   ╚═╝   ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
 "
 
-echo "$ansiArt"
 
-sudo pacman -Syu --noconfirm --needed git
+# ------------------------
+# Print ANSI art with delay per character
+# ------------------------
+TYPE_SPEED=0.002  # seconds per character
 
+while IFS= read -r line; do
+    for (( i=0; i<${#line}; i++ )); do
+        echo -n "${line:$i:1}"
+        sleep $TYPE_SPEED
+    done
+    echo ""
+done <<< "$ansiArt"
 
-git clone https://github.com/gintsperkons/hyprarch.git ~/.local/share/hyprarch
+# ------------------------
+# Branch selection
+# ------------------------
+BRANCH=${1:-main}   # Use first argument or default to 'main'
 
-cd ~/.local/share/hyprarch || exit
+# Clone or update repository
+TARGET_DIR="$HOME/.local/share/hyprarch"
 
-./install.sh
+if [ -d "$TARGET_DIR/.git" ]; then
+    echo "Updating existing repo..."
+    cd "$TARGET_DIR" || exit
+    git fetch origin
+    git checkout "$BRANCH"
+    git pull origin "$BRANCH"
+else
+    echo "Cloning branch '$BRANCH'..."
+    git clone --branch "$BRANCH" https://github.com/gintsperkons/hyprarch.git "$TARGET_DIR"
+    cd "$TARGET_DIR" || exit
+fi
+
+# Run install script
+bash install.sh

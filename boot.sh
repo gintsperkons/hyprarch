@@ -12,6 +12,7 @@ ansiArt="
 "
 
 
+
 # ------------------------
 # Print ANSI art with delay per character
 # ------------------------
@@ -24,6 +25,8 @@ while IFS= read -r line; do
     done
     echo ""
 done <<< "$ansiArt"
+
+sudo pacman -Syu github --noconfirm --needed
 
 # ------------------------
 # Branch selection

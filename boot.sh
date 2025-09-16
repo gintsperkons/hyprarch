@@ -26,7 +26,7 @@ while IFS= read -r line; do
     echo ""
 done <<< "$ansiArt"
 
-sudo pacman -Syu github --noconfirm --needed
+sudo pacman -Syu git --noconfirm --needed
 
 # ------------------------
 # Branch selection
